@@ -1,0 +1,40 @@
+<% application = fetch(:application) %>
+set mail-format { subject: <%= "#{fetch(:full_app_name)} - #{fetch(:rails_env)}" %> $SERVICE $EVENT at $DATE }
+check process nginx 
+  with pidfile /var/run/nginx.pid #Pid file for nginx in my case it located in /opt/nginx/logs/
+  start program = "/etc/init.d/nginx start"
+  stop program = "/etc/init.d/nginx stop"
+  # if failed host 176.58.111.229 port 80 protocol HTTP then restart #set your server IP that runs nginx
+  if 5 restarts with 5 cycles then timeout
+  if cpu is greater than 30% for 2 cycles then alert
+  if cpu is greater than 50% for 5 cycles then restart
+  if totalmem is greater than 50.0 MB for 5 cycles then restart
+  if children is greater than 10 then restart
+
+check process unicorn
+  with pidfile /home/deploy/apps/<%= application %>/current/tmp/pids/unicorn.pid
+  start program = "/etc/init.d/unicorn_<%= application %> start"
+  stop program = "/etc/init.d/unicorn_<%= application %> stop"
+  if mem is greater than 300.0 MB for 1 cycles then restart       # eating up memory?
+  if cpu is greater than 50% for 2 cycles then alert                  # send an email to admin
+  if cpu is greater than 80% for 30 cycles then restart                # hung process?
+  group unicorn
+
+<% (0..(fetch(:unicorn_worker_count) -1)).each do |worker| %>
+  check process unicorn_worker_<%= (5000 + worker).to_s %>
+    with pidfile /home/deploy/apps/<%= application %>/current/tmp/pids/unicorn.<%= (5000 + worker).to_s %>.pid
+    start program = "/bin/true"
+    stop program = "/etc/init.d/unicorn_<%= application %> kill_worker <%= (5000 + worker).to_s %>"
+    if mem is greater than 300.0 MB for 1 cycles then restart
+    if cpu is greater than 80% for 30 cycles then restart
+
+    group unicorn_workers
+<% end %>
+
+#Monitoring ssh Service
+
+check process sshd with pidfile /var/run/sshd.pid
+  start program "/etc/init.d/ssh start"
+  stop program "/etc/init.d/ssh stop"
+  if failed port 22 protocol ssh then restart
+  if 5 restarts within 5 cycles then timeout

@@ -1,0 +1,11 @@
+<%= fetch(:rails_env) %>:
+  adapter: postgresql
+  timeout: 5000
+  encoding: utf8
+  reconnect: false
+  database: <%= "#{fetch(:applocation)}_#{fetch(:rails_env)}" %>
+  pool: 5
+  username: <%= "#{fetch(:applocation)}_#{fetch(:rails_env)}" %>
+  password:
+  host:
+  port: 3306

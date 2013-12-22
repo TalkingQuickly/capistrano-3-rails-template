@@ -1,0 +1,39 @@
+namespace :deploy do
+  task :setup_config do
+    on roles(:app) do
+      # make the config dir
+      execute :mkdir, "-p #{shared_path}/config"
+      full_app_name = fetch(:full_app_name)
+
+      # config files to be uploaded to shared/config, see the
+      # definition of smart_template for details of operation.
+      # Essentially looks for #{filename}.erb in deploy/#{full_app_name}/
+      # and if it isn't there, falls back to deploy/#{shared}. Generally
+      # everything should be in deploy/shared with params which differ
+      # set in the stage files
+      config_files = fetch(:config_files)
+      config_files.each do |file|
+        smart_template file
+      end
+
+      # which of the above files should be marked as executable
+      executable_files = fetch(:executable_config_files)
+      executable_files.each do |file|
+        execute :chmod, "+x #{shared_path}/config/#{file}"
+      end
+
+      # symlink stuff which should be... symlinked
+      symlinks = [
+      {source: "nginx.conf" , link: "/etc/nginx/sites-enabled/#{full_app_name}"},
+      {source: "unicorn_init.sh" , link: "/etc/init.d/unicorn_#{full_app_name}"},
+      {source: "log_rotation" , link: "/etc/logrotate.d/#{full_app_name}"},
+      {source: "monit" , link: "/etc/monit/conf.d/#{full_app_name}.conf"},
+      {source: "sidekiq_init.sh", link: "/etc/init.d/sidekiq_#{full_app_name}"}
+      ]
+
+      symlinks.each do |symlink|
+        sudo "ln -nfs #{shared_path}/config/#{symlink[:source]} #{symlink[:link]}"
+      end
+    end
+  end
+end
