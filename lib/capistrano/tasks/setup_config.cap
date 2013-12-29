@@ -23,13 +23,7 @@ namespace :deploy do
       end
 
       # symlink stuff which should be... symlinked
-      symlinks = [
-      {source: "nginx.conf" , link: "/etc/nginx/sites-enabled/#{full_app_name}"},
-      {source: "unicorn_init.sh" , link: "/etc/init.d/unicorn_#{full_app_name}"},
-      {source: "log_rotation" , link: "/etc/logrotate.d/#{full_app_name}"},
-      {source: "monit" , link: "/etc/monit/conf.d/#{full_app_name}.conf"},
-      {source: "sidekiq_init.sh", link: "/etc/init.d/sidekiq_#{full_app_name}"}
-      ]
+      symlinks = fetch(:symlinks)
 
       symlinks.each do |symlink|
         sudo "ln -nfs #{shared_path}/config/#{symlink[:source]} #{symlink[:link]}"
