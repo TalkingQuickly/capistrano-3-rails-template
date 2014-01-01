@@ -50,23 +50,23 @@ set(:executable_config_files, %w(
 set(:symlinks, [
   {
     source: "nginx.conf",
-    link: "/etc/nginx/sites-enabled/#{full_app_name}"
+    link: "/etc/nginx/sites-enabled/#{fetch(:full_app_name)}"
   },
   {
     source: "unicorn_init.sh",
-    link: "/etc/init.d/unicorn_#{full_app_name}"
+    link: "/etc/init.d/unicorn_#{fetch(:full_app_name)}"
   },
   {
     source: "log_rotation",
-   link: "/etc/logrotate.d/#{full_app_name}"
+   link: "/etc/logrotate.d/#{fetch(:full_app_name)}"
   },
   {
     source: "monit",
-    link: "/etc/monit/conf.d/#{full_app_name}.conf"
+    link: "/etc/monit/conf.d/#{fetch(:full_app_name)}.conf"
   },
   {
     source: "sidekiq_init.sh",
-    link: "/etc/init.d/sidekiq_#{full_app_name}"
+    link: "/etc/init.d/sidekiq_#{fetch(:full_app_name)}"
   }
 ])
 
