@@ -63,10 +63,6 @@ set(:symlinks, [
   {
     source: "monit",
     link: "/etc/monit/conf.d/#{fetch(:full_app_name)}.conf"
-  },
-  {
-    source: "sidekiq_init.sh",
-    link: "/etc/init.d/sidekiq_#{fetch(:full_app_name)}"
   }
 ])
 
