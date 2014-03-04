@@ -7,7 +7,7 @@ APP_ROOT=<%= current_path %>
 PID_DIR=$APP_ROOT/tmp/pids
 PID=$PID_DIR/unicorn.pid
 CMD="cd $APP_ROOT;  bundle exec unicorn -D -c <%= "#{shared_path}/config/unicorn.rb" %> -E <%= fetch(:rails_env) %>"
-AS_USER=deploy
+AS_USER=<%= fetch(:deploy_user) %>
 set -u
 
 OLD_PIN="$PID.oldbin"
