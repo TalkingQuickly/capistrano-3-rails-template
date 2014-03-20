@@ -9,6 +9,13 @@ worker_processes <%= fetch(:unicorn_worker_count) %>
 timeout 40
 preload_app true
 
+# Force unicorn to look at the Gemfile in the current_path
+# otherwise once we've first started a master process, it
+# will always point to the first one it started.
+before_exec do |server|
+  ENV['BUNDLE_GEMFILE'] = "<%= root %>/Gemfile"
+end
+
 before_fork do |server, worker|
    defined?(ActiveRecord::Base) and
     ActiveRecord::Base.connection.disconnect!
@@ -21,7 +28,6 @@ before_fork do |server, worker|
       puts "killing master process (good thing tm)"
     rescue Errno::ENOENT, Errno::ESRCH
       puts "unicorn master already killed"
-      # someone else did our job for us
     end
   end
 end
