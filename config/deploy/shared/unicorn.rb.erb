@@ -13,7 +13,7 @@ preload_app true
 # otherwise once we've first started a master process, it
 # will always point to the first one it started.
 before_exec do |server|
-  ENV['BUNDLE_GEMFILE'] = "<%= root %>/Gemfile"
+  ENV['BUNDLE_GEMFILE'] = "<%= current_path %>/Gemfile"
 end
 
 before_fork do |server, worker|
