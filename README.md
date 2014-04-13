@@ -29,3 +29,6 @@ You should have the following in your Gemfile:
     # if you are using RBENV
     gem 'capistrano-rbenv', "~> 2.0" 
 
+    # Use Unicorn as our app server
+    gem 'unicorn'
+
