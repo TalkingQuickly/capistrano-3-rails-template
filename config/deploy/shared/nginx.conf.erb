@@ -3,7 +3,8 @@ upstream unicorn {
 }
 
 server {
-  listen 80 default deferred;
+  server_name <%= fetch(:server_name) %>;
+  listen 80;
   root <%= fetch(:deploy_to) %>/current/public;
 
   location ^~ /assets/ {
@@ -27,7 +28,8 @@ server {
 
 <% if fetch(:enable_ssl) %>
 server {
-  listen 443 default deferred;
+  server_name <%= fetch(:server_name) %>;
+  listen 443;
   root <%= fetch(:deploy_to) %>/current/public;
 
   location ^~ /assets/ {
