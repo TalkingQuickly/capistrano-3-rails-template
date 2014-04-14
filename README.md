@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a sample configuration for deploying Ruby on Rails applications.
+This is a sample configuration for deploying Ruby on Rails applications with Capistrano 3.1 including Zero Downtime Deployment with Unicorn and Sidekiq background Workers.
 
 ## Usage
 
