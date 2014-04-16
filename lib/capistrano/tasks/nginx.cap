@@ -11,7 +11,7 @@ namespace :nginx do
   desc "Remove default Nginx Virtual Host"
   task "remove_default_vhost" do 
     on roles(:app) do
-      if test("[ -f /etc/nginx/sites-enabled/default]")
+      if test("[ -f /etc/nginx/sites-enabled/default ]")
       sudo "rm /etc/nginx/sites-enabled/default"
       puts "removed default Nginx Virtualhost"
       else
