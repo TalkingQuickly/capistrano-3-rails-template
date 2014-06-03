@@ -4,7 +4,7 @@ set -e
 APP_ROOT=<%= current_path %>
 PID=$APP_ROOT/tmp/pids/sidekiq.pid
 CMD="cd $APP_ROOT; RAILS_ENV=<%= "#{fetch(:rails_env)}" %> nohup bundle exec sidekiq -e <%= "#{fetch(:rails_env)}" %> -C <%= current_path %>/config/sidekiq.yml -i 0 -P $PID >> <%= current_path %>/log/sidekiq.log 2>&1 &"
-AS_USER="deploy"
+AS_USER=<%= fetch(:deploy_user) %>
 
 run () {
   if [ "$(id -un)" = "$AS_USER" ]; then
