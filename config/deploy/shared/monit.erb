@@ -1,7 +1,7 @@
 <% application = fetch(:application) %>
 set mail-format { subject: <%= "#{fetch(:full_app_name)} - #{fetch(:rails_env)}" %> $SERVICE $EVENT at $DATE }
 
-check process unicorn
+check process unicorn_<%= application %>
   with pidfile <%= current_path %>/tmp/pids/unicorn.pid
   start program = "/etc/init.d/unicorn_<%= application %>_<%= fetch(:rails_env)%> start"
   stop program = "/etc/init.d/unicorn_<%= application %>_<%= fetch(:rails_env)%> stop"
@@ -11,7 +11,7 @@ check process unicorn
   group unicorn
 
 <% (0..(fetch(:unicorn_worker_count) -1)).each do |worker| %>
-  check process unicorn_worker_<%= (5000 + worker).to_s %>
+  check process unicorn_worker_<%= (5000 + worker).to_s %>_<%= application %>_
     with pidfile <%= current_path %>/tmp/pids/unicorn.<%= (5000 + worker).to_s %>.pid
     start program = "/bin/true"
     stop program = "/etc/init.d/unicorn_<%= application %>_<%= fetch(:rails_env)%> kill_worker <%= (5000 + worker).to_s %>"

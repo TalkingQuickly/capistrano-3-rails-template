@@ -3,8 +3,9 @@ set -e
 
 APP_ROOT=<%= current_path %>
 PID=$APP_ROOT/tmp/pids/sidekiq.pid
-CMD="cd $APP_ROOT; RAILS_ENV=<%= "#{fetch(:rails_env)}" %> nohup bundle exec sidekiq -e <%= "#{fetch(:rails_env)}" %> -C <%= current_path %>/config/sidekiq.yml -i 0 -P $PID >> <%= current_path %>/log/sidekiq.log 2>&1 &"
-AS_USER="deploy"
+CMD="cd $APP_ROOT; RAILS_ENV=<%= "#{fetch(:rails_env)}" %> nohup bundle exec sidekiq -e <%= "#{fetch(:rails_env)}" %> -C $APP_ROOT/config/sidekiq.yml -i 0 -P $PID >> $APP_ROOT/log/sidekiq.log 2>&1 &"
+STOP_CMD="cd $APP_ROOT; RAILS_ENV=<%= "#{fetch(:rails_env)}" %> bundle exec sidekiqctl stop $APP_ROOT/tmp/pids/sidekiq.pid 10"
+AS_USER=<%= fetch(:deploy_user) %>
 
 run () {
   if [ "$(id -un)" = "$AS_USER" ]; then
@@ -24,17 +25,24 @@ case "$1" in
     run "$CMD"
     ;;
   stop)
-    if kill -0 `cat $PID`
+    if test -s "$PID" && kill -0 `cat $PID`
     then
-        cd $APP_ROOT
-        bundle exec sidekiqctl stop $APP_ROOT/tmp/pids/sidekiq.pid 10
         echo "stopping...."
+        run "$STOP_CMD"
     else
         echo "not running"
     fi
     ;;
+  restart|reload)
+    if test -s "$PID" && kill -0 `cat $PID`
+    then
+      echo "stopping...."
+      run "$STOP_CMD"
+    fi
+    run "$CMD"    
+    ;;
   *)
-    echo >&2 "Usage: $0 <start|stop>"
+    echo >&2 "Usage: $0 <start|stop|restart>"
     exit 1
     ;;
 esac
