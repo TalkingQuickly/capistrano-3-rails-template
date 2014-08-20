@@ -1,4 +1,4 @@
-upstream unicorn {
+upstream unicorn_<%= fetch(:full_app_name) %> {
   server unix:/tmp/unicorn.<%= fetch(:full_app_name) %>.sock fail_timeout=0;
 }
 
@@ -13,12 +13,12 @@ server {
     add_header Cache-Control public;
   }
 
-  try_files $uri/index.html $uri @unicorn;
-  location @unicorn {
+  try_files $uri/index.html $uri @unicorn_<%= fetch(:full_app_name) %>;
+  location @unicorn_<%= fetch(:full_app_name) %> {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $http_host;
     proxy_redirect off;
-    proxy_pass http://unicorn;
+    proxy_pass http://unicorn_<%= fetch(:full_app_name) %>;
   }
 
   error_page 500 502 503 504 /500.html;
@@ -38,13 +38,13 @@ server {
     add_header Cache-Control public;
   }
 
-  try_files $uri/index.html $uri @unicorn;
-  location @unicorn {
+  try_files $uri/index.html $uri @unicorn_<%= fetch(:full_app_name) %>;
+  location @unicorn_<%= fetch(:full_app_name) %> {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header   X-Forwarded-Proto https;
     proxy_set_header Host $http_host;
     proxy_redirect off;
-    proxy_pass http://unicorn;
+    proxy_pass http://unicorn_<%= fetch(:full_app_name) %>;
   }
 
   error_page 500 502 503 504 /500.html;
