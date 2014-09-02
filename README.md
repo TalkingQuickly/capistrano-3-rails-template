@@ -18,10 +18,10 @@ book Reliably Deploying Rails Applications available on Leanpub:
 
 You should have the following in your Gemfile:
 
-    gem 'capistrano', '~> 3.1.0'
+    gem 'capistrano', '~> 3.2.1'
 
     # rails specific capistrano funcitons
-    gem 'capistrano-rails', '~> 1.1.0'
+    gem 'capistrano-rails', '~> 1.1.1'
 
     # integrate bundler with capistrano
     gem 'capistrano-bundler'
