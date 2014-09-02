@@ -1,4 +1,7 @@
 # Load DSL and Setup Up Stages
+
+set :bundle_cmd, "/usr/local/rbenv/shims/bundle"
+
 require 'capistrano/setup'
 
 # Includes default deployment tasks
