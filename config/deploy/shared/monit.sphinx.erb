@@ -1,0 +1,9 @@
+<% application = fetch(:application) %>
+
+check process searchd 
+  with pidfile <%= deploy_to %>/shared/tmp/pids/production.sphinx.pid
+  start program = "/etc/init.d/start_sphinx"
+  stop program = "/etc/init.d/stop_sphinx"
+
+
+  
