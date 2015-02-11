@@ -1,3 +1,5 @@
+require 'thinking_sphinx/capistrano'
+
 set :application, 'app_name'
 set :deploy_user, 'deploy'
 
@@ -7,7 +9,7 @@ set :repo_url, 'git@github.com:username/repo.git'
 
 # setup rbenv.
 set :rbenv_type, :system
-set :rbenv_ruby, '2.1.1'
+set :rbenv_ruby, '2.1.2'
 set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 
@@ -15,7 +17,7 @@ set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :keep_releases, 5
 
 # files we want symlinking to specific entries in shared
-set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/thinking_sphinx.yml}
 
 # dirs we want symlinking to shared
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -30,8 +32,13 @@ set :tests, []
 set(:config_files, %w(
   nginx.conf
   database.example.yml
+  secrets.example.yml
+  thinking_sphinx.yml
   log_rotation
   monit
+  monit.sphinx
+  start_sphinx
+  stop_sphinx
   unicorn.rb
   unicorn_init.sh
 ))
@@ -40,6 +47,8 @@ set(:config_files, %w(
 # by deploy:setup_config
 set(:executable_config_files, %w(
   unicorn_init.sh
+  start_sphinx
+  stop_sphinx
 ))
 
 
@@ -64,6 +73,18 @@ set(:symlinks, [
   {
     source: "monit",
     link: "/etc/monit/conf.d/{{full_app_name}}.conf"
+  },
+  {
+    source: "monit.sphinx",
+    link: "/etc/monit/conf.d/sphinx.conf"
+  },
+  {
+    source: "start_sphinx",
+    link: "/etc/init.d/start_sphinx"
+  },
+  {
+    source: "stop_sphinx",
+    link: "/etc/init.d/stop_sphinx"
   }
 ])
 
