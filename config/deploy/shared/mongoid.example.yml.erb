@@ -5,7 +5,7 @@
     default:
       # Defines the name of the default database that Mongoid can connect to.
       # (required).
-      database: <%= "#{fetch(:applocation)}_#{fetch(:rails_env)}" %>
+      database: <%= "#{fetch(:application)}_#{fetch(:rails_env)}" %>
       # Provides the hosts the default session can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
