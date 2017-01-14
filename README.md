@@ -18,17 +18,20 @@ book Reliably Deploying Rails Applications available on Leanpub:
 
 You should have the following in your Gemfile:
 
-    gem 'capistrano', '~> 3.1.0'
+    gem 'unicorn', '~> 4.8.3'
 
-    # rails specific capistrano funcitons
-    gem 'capistrano-rails', '~> 1.1.0'
+    group :development do
+      gem 'capistrano', '~> 3.2.1'
 
-    # integrate bundler with capistrano
-    gem 'capistrano-bundler'
+      # rails specific capistrano functions
+      gem 'capistrano-rails', '~> 1.1.0'
 
-    # if you are using RBENV
-    gem 'capistrano-rbenv', "~> 2.0" 
+      # integrate bundler with capistrano
+      gem 'capistrano-bundler'
 
-    # Use Unicorn as our app server
-    gem 'unicorn'
+      # if you are using Rbenv
+      gem 'capistrano-rbenv', "~> 2.0"
 
+      # include helper tasks
+      gem 'capistrano-cookbook', require: false
+    end
