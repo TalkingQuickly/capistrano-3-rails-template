@@ -2,7 +2,7 @@ namespace :deploy do
   desc "compiles assets locally then rsyncs"
   task :compile_assets_locally do
     run_locally do
-      execute "RAILS_ENV=#{fetch(:rails_env)} bundle exec rake assets:precompile"
+      execute "bundle exec rake assets:precompile RAILS_ENV=#{fetch(:rails_env)}"
     end
     on roles(:app) do |role|
       run_locally do
